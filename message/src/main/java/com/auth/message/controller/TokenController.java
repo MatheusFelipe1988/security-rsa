@@ -20,7 +20,7 @@ public class TokenController {
     private final JwtEncoder jwtEncoder;
     private final RepositoryUser repository;
 
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public TokenController(JwtEncoder jwtEncoder, RepositoryUser repository, BCryptPasswordEncoder passwordEncoder) {
         this.jwtEncoder = jwtEncoder;
@@ -30,9 +30,10 @@ public class TokenController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginDTO loginDTO) throws Exception {
+
         var users = repository.findByUname(loginDTO.uname());
 
-        if(users.isEmpty() || users.get().isLoginCorrect(loginDTO, passwordEncoder)){
+        if(users.isEmpty() || !users.get().isLoginCorrect(loginDTO, passwordEncoder)){
             throw new BadCredentialsException("Usuario invalido");
         }
 
