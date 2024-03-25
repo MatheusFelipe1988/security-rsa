@@ -2,6 +2,7 @@ package com.auth.message.controller;
 
 import com.auth.message.controller.dto.LoginDTO;
 import com.auth.message.controller.dto.LoginResponse;
+import com.auth.message.entity.Role;
 import com.auth.message.repository.RepositoryUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RestController
 public class TokenController {
@@ -41,11 +43,17 @@ public class TokenController {
 
         var expiresIn = 300L;
 
+        var escope = users.get().getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(" "));
+
         var claims = JwtClaimsSet.builder()
                 .issuer("myJava17")
                 .subject(users.get().getUserid().toString())
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
+                .claim("scope", escope)
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
