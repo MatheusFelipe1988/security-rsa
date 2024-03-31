@@ -7,6 +7,9 @@ import com.auth.message.entity.Role;
 import com.auth.message.entity.Tweet;
 import com.auth.message.repository.RepositoryTweet;
 import com.auth.message.repository.RepositoryUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,11 @@ public class TweetController {
         this.repository = repository;
     }
 
+    @Operation(summary = "método que publica tweets", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK para tweet adicionado"),
+            @ApiResponse(responseCode = "500", description = "ERRO caso o tweet for incorreto")
+    })
     @PostMapping("/tweet")
     public ResponseEntity<Void> postTweet(@RequestBody TweetDTO tweetDTO, JwtAuthenticationToken token){
 
@@ -42,6 +50,11 @@ public class TweetController {
 
     }
 
+    @Operation(summary = "método para apagar tweets", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK para o novo dado adicionado"),
+            @ApiResponse(responseCode = "500", description = "ERRO por falha do usuario em implementar um dado")
+    })
     @DeleteMapping("/tweet/{id}")
     public ResponseEntity<Void> deleteTweet(@PathVariable("id") Long tweetid,
                                             JwtAuthenticationToken token){
@@ -61,6 +74,11 @@ public class TweetController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "listando tweets adicionado pelos usuarios como admin", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "quando a listagem dos usuarios pelo admin for OK"),
+            @ApiResponse(responseCode = "500", description = "ERRO por falha do comando para listar como ADMIN")
+    })
     @GetMapping("/feed")
     public ResponseEntity<FeedDTO> feed(@RequestParam(value = "page", defaultValue = "0") int page,
                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){

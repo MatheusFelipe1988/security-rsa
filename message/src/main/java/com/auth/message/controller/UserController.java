@@ -5,6 +5,9 @@ import com.auth.message.entity.Role;
 import com.auth.message.entity.Users;
 import com.auth.message.repository.RepositoryRole;
 import com.auth.message.repository.RepositoryUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +34,11 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(summary = "Controller que publica o cadastro do usuario", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "quando o dado injetado for OK"),
+            @ApiResponse(responseCode = "401", description = "Erro por erro na injeção do dado")
+    })
     @Transactional
     @PostMapping("/users")
     public ResponseEntity<Void> newUser(@RequestBody UserDTO userDTO){
@@ -52,6 +60,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "listando usuarios chamados pelo admin", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "quando a listagem dos usuarios cadastrados for OK"),
+            @ApiResponse(responseCode = "401", description = "quando der erro na hora de listar usuarios")
+    })
     @GetMapping("/users")
     @PreAuthorize("HasAuthority('ESCOPE_ADMIN')")
     public ResponseEntity<List<Users>> listUsers(){

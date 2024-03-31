@@ -4,6 +4,9 @@ import com.auth.message.controller.dto.LoginDTO;
 import com.auth.message.controller.dto.LoginResponse;
 import com.auth.message.entity.Role;
 import com.auth.message.repository.RepositoryUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +33,11 @@ public class TokenController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(summary = "realizando login como usuario ou admin", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK quando o login foi realizado"),
+            @ApiResponse(responseCode = "403", description = "proiba caso o token inserido for incorreto")
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginDTO loginDTO) throws Exception {
 
